@@ -306,12 +306,11 @@
    "options": "Single Sided\nDouble Sided\nTwo Sided\nTwo Sided\nTumble"
   },
   {
-   "default": "Default",
    "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
    "fieldname": "interpolation",
    "fieldtype": "Select",
    "label": "Interpolation",
-   "options": "Default\nBicubic\nBilinear\nNearest Neighbor"
+   "options": "Bicubic\nBilinear\nNearest Neighbor"
   },
   {
    "default": "0",
@@ -358,12 +357,11 @@
    "label": "Legacy Printing"
   },
   {
-   "default": "Default",
    "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
    "fieldname": "orientation",
    "fieldtype": "Select",
    "label": "Orientation",
-   "options": "Default\nPortrait\nLandscape\nLandscape - Reverse"
+   "options": "Portrait\nLandscape\nLandscape - Reverse"
   },
   {
    "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
@@ -514,7 +512,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-10-25 14:59:22.662396",
+ "modified": "2023-10-25 18:22:08.707351",
  "modified_by": "Administrator",
  "module": "HW Integration",
  "name": "Hardware Testing",
