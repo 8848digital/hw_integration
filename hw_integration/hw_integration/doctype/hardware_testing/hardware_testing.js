@@ -57,7 +57,9 @@ frappe.ui.form.on("Hardware Testing", {
         qz.print(config, data);
     },
     print(frm) {
-        var config = qz.configs.create(frm.doc.select_printer)
+        // var config = qz.configs.create(frm.doc.select_printer)
+        var config = updateConfig(frm)
+        config.setPrinter(frm.doc.select_printer)
         var printData 
         if (frm.doc.print_type == "Raw Printing") {
             printData = eval(frm.doc.raw_commands)
@@ -70,6 +72,7 @@ frappe.ui.form.on("Hardware Testing", {
                 data: frappe.render_template(frm.doc.html)
             }]
         }
+        console.log(config)
         qz.print(config, printData)
     },
     print_format(frm) {
@@ -116,7 +119,10 @@ var template = `
 {% endfor %}
 </ul>`
 
-function updateConfig(frm) {
+function updateConfig(frm, cfg = null) {
+    if (cfg == null) {
+        cfg = qz.configs.create(null);
+    }
     var pxlSize = null;
     if (frm.doc.size && (!frm.doc.width || !frm.doc.height)) {
         pxlSize = {
@@ -143,7 +149,7 @@ function updateConfig(frm) {
         };
     }
 
-    var pxlMargins = margins;
+    var pxlMargins = frm.doc.margins;
     if (frm.doc.individual_margin) {
         pxlMargins = {
             top: frm.doc.top,
@@ -162,7 +168,7 @@ function updateConfig(frm) {
                         encoding: frm.doc.encoding,
                         spool: { size: spoolSize, end: frm.doc.end_of_doc },
                         bounds: pxlBounds,
-                        colorType: frm.doc.color_type,
+                        colorType: (frm.doc.color_type || "").toLowerCase(),
                         copies: copies,
                         density: pxlDensity,
                         duplex: frm.doc.duplex,
@@ -176,8 +182,10 @@ function updateConfig(frm) {
                         rotation: frm.doc.rotation,
                         scaleContent: frm.doc.scale_content,
                         size: pxlSize,
-                        units: frm.doc.units
+                        units: frm.doc.units.toLowerCase()
                     });
+
+    return cfg
 }
 
 function resetRawOptions(frm) {
