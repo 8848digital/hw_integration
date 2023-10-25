@@ -1,0 +1,537 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-10-23 17:55:56.026177",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "printing_tab",
+  "print_type",
+  "select_printer",
+  "reset_options",
+  "column_break_nknu",
+  "list_all_printers",
+  "open_cash_drawer",
+  "available_printers",
+  "raw_printing_section",
+  "print_format",
+  "raw_commands",
+  "pixel_printing_section",
+  "html_print_format",
+  "html",
+  "config_options_section",
+  "encoding",
+  "end_of_doc",
+  "per_spool",
+  "color_type",
+  "duplex",
+  "interpolation",
+  "copies",
+  "job_name",
+  "individual_margin",
+  "margins",
+  "top",
+  "right",
+  "bottom",
+  "left",
+  "column_break_wnde",
+  "force_raw",
+  "legacy_printing",
+  "orientation",
+  "printer_tray",
+  "rasterize",
+  "rotation",
+  "density_asymmetric",
+  "density",
+  "cross",
+  "feed",
+  "units",
+  "scale_content",
+  "size",
+  "width",
+  "height",
+  "bounds",
+  "x",
+  "y",
+  "b_width",
+  "b_height",
+  "printer_options_section",
+  "image_x",
+  "image_y",
+  "page_ranges",
+  "ignore_transparency",
+  "column_break_sdhj",
+  "dot_density",
+  "xml_tag",
+  "render_width",
+  "render_height",
+  "serial_tab",
+  "port",
+  "open_port",
+  "close_port",
+  "column_break_pnze",
+  "list_all_ports",
+  "available_ports",
+  "section_break_gtbs",
+  "cmd",
+  "column_break_rjbo",
+  "send_command"
+ ],
+ "fields": [
+  {
+   "fieldname": "select_printer",
+   "fieldtype": "Select",
+   "label": "Select Printer"
+  },
+  {
+   "fieldname": "column_break_nknu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "available_printers",
+   "fieldtype": "HTML",
+   "label": "Available Printers"
+  },
+  {
+   "fieldname": "print_format",
+   "fieldtype": "Link",
+   "label": "Sample Print Format",
+   "options": "Print Format"
+  },
+  {
+   "fieldname": "raw_commands",
+   "fieldtype": "Code",
+   "label": "Raw Commands"
+  },
+  {
+   "fieldname": "serial_tab",
+   "fieldtype": "Tab Break",
+   "label": "Serial"
+  },
+  {
+   "fieldname": "port",
+   "fieldtype": "Select",
+   "label": "Port"
+  },
+  {
+   "fieldname": "column_break_pnze",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "list_all_printers",
+   "fieldtype": "Button",
+   "label": "List all Printers"
+  },
+  {
+   "fieldname": "print_type",
+   "fieldtype": "Select",
+   "label": "Print Type",
+   "options": "Raw Printing\nPixel Printing"
+  },
+  {
+   "depends_on": "eval:doc.print_type == \"Raw Printing\"",
+   "fieldname": "raw_printing_section",
+   "fieldtype": "Section Break",
+   "label": "Raw Printing"
+  },
+  {
+   "fieldname": "printing_tab",
+   "fieldtype": "Tab Break",
+   "label": "Printing"
+  },
+  {
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "fieldname": "pixel_printing_section",
+   "fieldtype": "Section Break",
+   "label": "Pixel Printing"
+  },
+  {
+   "fieldname": "html_print_format",
+   "fieldtype": "Link",
+   "label": "Print Format",
+   "options": "Print Format"
+  },
+  {
+   "fieldname": "html",
+   "fieldtype": "Code",
+   "label": "HTML"
+  },
+  {
+   "fieldname": "list_all_ports",
+   "fieldtype": "Button",
+   "label": "List all Ports"
+  },
+  {
+   "fieldname": "available_ports",
+   "fieldtype": "HTML",
+   "label": "Available Ports"
+  },
+  {
+   "fieldname": "open_port",
+   "fieldtype": "Button",
+   "label": "Open Port"
+  },
+  {
+   "fieldname": "close_port",
+   "fieldtype": "Button",
+   "label": "Close Port"
+  },
+  {
+   "fieldname": "section_break_gtbs",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "cmd",
+   "fieldtype": "Data",
+   "label": "Cmd"
+  },
+  {
+   "fieldname": "column_break_rjbo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "send_command",
+   "fieldtype": "Button",
+   "label": "Send command"
+  },
+  {
+   "fieldname": "config_options_section",
+   "fieldtype": "Section Break",
+   "label": "Config Options",
+   "mandatory_depends_on": "Printing ConfigurationsSection Title\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\tNo LabelColumn Title\n\t\t\t\n\t\t\n\t\t\t\n\t\tEncodingEncodingLabel\n\t\t\t\n\t\t\n\t\t\t\n\t\tEnd of DocEnd of DocLabel\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\tPer SpoolPer SpoolLabel\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\tNo LabelColumn Title\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\tForce RawForce RawLabel\n\t\t\t\n\t\t\n\t\t\t\n\t\tBypass printer drivers (CUPS only)CopiesCopiesLabel\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\tJob NameJob NameLabel\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\tJob title as it appears in print queue"
+  },
+  {
+   "depends_on": "eval:doc.print_type == \"Raw Printing\"",
+   "fieldname": "encoding",
+   "fieldtype": "Data",
+   "label": "Encoding"
+  },
+  {
+   "depends_on": "eval:doc.print_type == \"Raw Printing\"",
+   "fieldname": "end_of_doc",
+   "fieldtype": "Data",
+   "label": "End of Doc"
+  },
+  {
+   "fieldname": "per_spool",
+   "fieldtype": "Int",
+   "label": "Per Spool"
+  },
+  {
+   "fieldname": "column_break_wnde",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Raw Printing\"",
+   "description": "Bypass printer drivers (CUPS only)",
+   "fieldname": "force_raw",
+   "fieldtype": "Check",
+   "label": "Force Raw"
+  },
+  {
+   "default": "1",
+   "fieldname": "copies",
+   "fieldtype": "Int",
+   "label": "Copies"
+  },
+  {
+   "description": "Job title as it appears in print queue",
+   "fieldname": "job_name",
+   "fieldtype": "Data",
+   "label": "Job Name"
+  },
+  {
+   "fieldname": "printer_options_section",
+   "fieldtype": "Section Break",
+   "label": "Printer Options"
+  },
+  {
+   "depends_on": "eval:doc.print_type == \"Raw Printing\"",
+   "fieldname": "image_x",
+   "fieldtype": "Int",
+   "label": "Image X"
+  },
+  {
+   "depends_on": "eval:doc.print_type == \"Raw Printing\"",
+   "fieldname": "image_y",
+   "fieldtype": "Int",
+   "label": "Image Y"
+  },
+  {
+   "fieldname": "column_break_sdhj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "single",
+   "depends_on": "eval:doc.print_type == \"Raw Printing\"",
+   "fieldname": "dot_density",
+   "fieldtype": "Data",
+   "label": "Dot Density"
+  },
+  {
+   "default": "v7:Image",
+   "depends_on": "eval:doc.print_type == \"Raw Printing\"",
+   "fieldname": "xml_tag",
+   "fieldtype": "Data",
+   "label": "XML Tag"
+  },
+  {
+   "default": "480",
+   "fieldname": "render_width",
+   "fieldtype": "Float",
+   "label": "Render Width"
+  },
+  {
+   "fieldname": "render_height",
+   "fieldtype": "Float",
+   "label": "Render Height"
+  },
+  {
+   "default": "Color",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "fieldname": "color_type",
+   "fieldtype": "Select",
+   "label": "Color Type",
+   "options": "Color\nGrayscale\nBlack & White"
+  },
+  {
+   "default": "Single Sided",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "fieldname": "duplex",
+   "fieldtype": "Select",
+   "label": "Duplex",
+   "options": "Single Sided\nDouble Sided\nTwo Sided\nTwo Sided\nTumble"
+  },
+  {
+   "default": "Default",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "fieldname": "interpolation",
+   "fieldtype": "Select",
+   "label": "Interpolation",
+   "options": "Default\nBicubic\nBilinear\nNearest Neighbor"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "fieldname": "individual_margin",
+   "fieldtype": "Check",
+   "label": "Individual Margin"
+  },
+  {
+   "depends_on": "eval:((doc.print_type == \"Pixel Printing\") && !doc.individual_margin)",
+   "fieldname": "margins",
+   "fieldtype": "Float",
+   "label": "Margins"
+  },
+  {
+   "depends_on": "eval:((doc.print_type == \"Pixel Printing\") && doc.individual_margin)",
+   "fieldname": "top",
+   "fieldtype": "Float",
+   "label": "Top"
+  },
+  {
+   "depends_on": "eval:((doc.print_type == \"Pixel Printing\") && doc.individual_margin)",
+   "fieldname": "right",
+   "fieldtype": "Float",
+   "label": "Right"
+  },
+  {
+   "depends_on": "eval:((doc.print_type == \"Pixel Printing\") && doc.individual_margin)",
+   "fieldname": "bottom",
+   "fieldtype": "Float",
+   "label": "Bottom"
+  },
+  {
+   "depends_on": "eval:((doc.print_type == \"Pixel Printing\") && doc.individual_margin)",
+   "fieldname": "left",
+   "fieldtype": "Float",
+   "label": "Left"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "fieldname": "legacy_printing",
+   "fieldtype": "Check",
+   "label": "Legacy Printing"
+  },
+  {
+   "default": "Default",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "fieldname": "orientation",
+   "fieldtype": "Select",
+   "label": "Orientation",
+   "options": "Default\nPortrait\nLandscape\nLandscape - Reverse"
+  },
+  {
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "fieldname": "printer_tray",
+   "fieldtype": "Data",
+   "label": "Printer Tray"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "fieldname": "rasterize",
+   "fieldtype": "Check",
+   "label": "Rasterize"
+  },
+  {
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "fieldname": "rotation",
+   "fieldtype": "Int",
+   "label": "Rotation"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "description": "DPI, DPCM or DPMM depending on units specified",
+   "fieldname": "density_asymmetric",
+   "fieldtype": "Check",
+   "label": "Density Asymmetric"
+  },
+  {
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\" && !doc.density_asymmetric",
+   "fieldname": "density",
+   "fieldtype": "Data",
+   "label": "Density"
+  },
+  {
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\" && doc.density_asymmetric",
+   "fieldname": "cross",
+   "fieldtype": "Int",
+   "label": "Cross"
+  },
+  {
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\" && doc.density_asymmetric",
+   "fieldname": "feed",
+   "fieldtype": "Int",
+   "label": "Feed"
+  },
+  {
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "fieldname": "units",
+   "fieldtype": "Select",
+   "label": "Units",
+   "options": "IN\nMM\nCM"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "description": "In relation to units specified",
+   "fieldname": "size",
+   "fieldtype": "Check",
+   "label": "Size"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\" && doc.size",
+   "fieldname": "width",
+   "fieldtype": "Float",
+   "label": "Width"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\" && doc.size",
+   "fieldname": "height",
+   "fieldtype": "Float",
+   "label": "Height"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "description": "In relation to units specified",
+   "fieldname": "bounds",
+   "fieldtype": "Check",
+   "label": "Bounds"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\" && doc.bounds",
+   "fieldname": "x",
+   "fieldtype": "Float",
+   "label": "X",
+   "options": "eval:doc.print_type == \"Pixel Printing\" && doc.bounds"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\" && doc.bounds",
+   "fieldname": "y",
+   "fieldtype": "Float",
+   "label": "Y"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\" && doc.bounds",
+   "fieldname": "b_width",
+   "fieldtype": "Float",
+   "label": "Width"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\" && doc.bounds",
+   "fieldname": "b_height",
+   "fieldtype": "Float",
+   "label": "Height"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "description": "Comma-separated ranges",
+   "fieldname": "page_ranges",
+   "fieldtype": "Data",
+   "label": "Page Range(s)"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "description": "Comma-separated ranges",
+   "fieldname": "ignore_transparency",
+   "fieldtype": "Check",
+   "label": "Ignore Transparency"
+  },
+  {
+   "fieldname": "open_cash_drawer",
+   "fieldtype": "Button",
+   "label": "Open Cash Drawer"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.print_type == \"Pixel Printing\"",
+   "fieldname": "scale_content",
+   "fieldtype": "Check",
+   "label": "Scale Content"
+  },
+  {
+   "fieldname": "reset_options",
+   "fieldtype": "Button",
+   "label": "Reset Options"
+  }
+ ],
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-10-25 14:59:22.662396",
+ "modified_by": "Administrator",
+ "module": "HW Integration",
+ "name": "Hardware Testing",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

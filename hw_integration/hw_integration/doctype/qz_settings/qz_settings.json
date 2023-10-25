@@ -1,0 +1,48 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-10-23 15:08:20.975357",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "trusted_certificate",
+  "private_certificate"
+ ],
+ "fields": [
+  {
+   "fieldname": "trusted_certificate",
+   "fieldtype": "Text",
+   "label": "Trusted Certificate"
+  },
+  {
+   "fieldname": "private_certificate",
+   "fieldtype": "Text",
+   "label": "Private Certificate"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-10-23 15:08:48.280002",
+ "modified_by": "Administrator",
+ "module": "HW Integration",
+ "name": "QZ Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
