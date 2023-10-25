@@ -50,7 +50,7 @@ frappe.ui.form.on("Hardware Testing", {
         })
     },
     open_cash_drawer(frm) {
-        var config = qz.configs.create(printer);
+        var config = qz.configs.create(frm.doc.select_printer);
         var data = [
             '\x10' + '\x14' + '\x01' + '\x00' + '\x05' //Generate Pulse to kick-out cash drawer
         ];
