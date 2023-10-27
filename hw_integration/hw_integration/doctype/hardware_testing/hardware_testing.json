@@ -71,13 +71,37 @@
   "port",
   "open_port",
   "close_port",
+  "reset_serial",
   "column_break_pnze",
   "list_all_ports",
   "available_ports",
   "section_break_gtbs",
   "cmd",
+  "data_type",
+  "baud_rate",
+  "data_bits",
+  "stop_bits",
   "column_break_rjbo",
-  "send_command"
+  "send_command",
+  "clear_screen",
+  "s_encoding",
+  "parity",
+  "flow_control",
+  "response_options_section",
+  "start_bytes",
+  "end_bytes",
+  "s_width",
+  "include_header",
+  "wait_for_new_line",
+  "r_encoding",
+  "column_break_zwof",
+  "enable_length_bytes",
+  "index",
+  "length",
+  "endian",
+  "enable_crc_bytes",
+  "crc_index",
+  "crc_length"
  ],
  "fields": [
   {
@@ -185,7 +209,7 @@
   {
    "fieldname": "cmd",
    "fieldtype": "Data",
-   "label": "Cmd"
+   "label": "Data"
   },
   {
    "fieldname": "column_break_rjbo",
@@ -506,13 +530,147 @@
    "fieldname": "reset_options",
    "fieldtype": "Button",
    "label": "Reset Options"
+  },
+  {
+   "fieldname": "clear_screen",
+   "fieldtype": "Button",
+   "label": "Clear Screen"
+  },
+  {
+   "fieldname": "response_options_section",
+   "fieldtype": "Section Break",
+   "label": "Response Options"
+  },
+  {
+   "fieldname": "start_bytes",
+   "fieldtype": "Data",
+   "label": "Start Bytes",
+   "read_only_depends_on": "eval:doc.wait_for_new_line"
+  },
+  {
+   "fieldname": "end_bytes",
+   "fieldtype": "Data",
+   "label": "End Bytes",
+   "read_only_depends_on": "eval:doc.wait_for_new_line"
+  },
+  {
+   "fieldname": "s_width",
+   "fieldtype": "Int",
+   "label": "Width",
+   "read_only_depends_on": "eval:doc.wait_for_new_line"
+  },
+  {
+   "default": "0",
+   "fieldname": "include_header",
+   "fieldtype": "Check",
+   "label": "Include Header",
+   "read_only_depends_on": "eval:doc.wait_for_new_line"
+  },
+  {
+   "default": "0",
+   "fieldname": "wait_for_new_line",
+   "fieldtype": "Check",
+   "label": "Wait for new line"
+  },
+  {
+   "fieldname": "r_encoding",
+   "fieldtype": "Data",
+   "label": "Encoding"
+  },
+  {
+   "fieldname": "column_break_zwof",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_length_bytes",
+   "fieldtype": "Check",
+   "label": "Enable Length Bytes"
+  },
+  {
+   "depends_on": "eval:doc.enable_length_bytes",
+   "fieldname": "index",
+   "fieldtype": "Int",
+   "label": "Index"
+  },
+  {
+   "depends_on": "eval:doc.enable_length_bytes",
+   "fieldname": "length",
+   "fieldtype": "Int",
+   "label": "Length"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_crc_bytes",
+   "fieldtype": "Check",
+   "label": "Enable CRC Bytes"
+  },
+  {
+   "fieldname": "data_type",
+   "fieldtype": "Select",
+   "label": "Data Type",
+   "options": "Plain\nFile"
+  },
+  {
+   "fieldname": "baud_rate",
+   "fieldtype": "Int",
+   "label": "Baud Rate"
+  },
+  {
+   "fieldname": "data_bits",
+   "fieldtype": "Int",
+   "label": "Data Bits"
+  },
+  {
+   "fieldname": "stop_bits",
+   "fieldtype": "Int",
+   "label": "Stop Bits"
+  },
+  {
+   "fieldname": "s_encoding",
+   "fieldtype": "Data",
+   "label": "Encoding"
+  },
+  {
+   "fieldname": "parity",
+   "fieldtype": "Data",
+   "label": "Parity"
+  },
+  {
+   "fieldname": "flow_control",
+   "fieldtype": "Data",
+   "label": "Flow Control"
+  },
+  {
+   "depends_on": "eval:doc.enable_length_bytes",
+   "fieldname": "endian",
+   "fieldtype": "Select",
+   "label": "Endian",
+   "options": "Big\nLittle"
+  },
+  {
+   "depends_on": "eval:doc.enable_crc_bytes",
+   "fieldname": "crc_index",
+   "fieldtype": "Int",
+   "label": "Index"
+  },
+  {
+   "depends_on": "eval:doc.enable_crc_bytes",
+   "fieldname": "crc_length",
+   "fieldtype": "Int",
+   "label": "Length"
+  },
+  {
+   "fieldname": "reset_serial",
+   "fieldtype": "Button",
+   "label": "Reset Options"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-10-25 18:22:08.707351",
+ "modified": "2023-10-26 12:00:32.400352",
  "modified_by": "Administrator",
  "module": "HW Integration",
  "name": "Hardware Testing",

@@ -97,25 +97,62 @@ frappe.ui.form.on("Hardware Testing", {
         })
     },
     open_port(frm) {
-        qz.serial.openPort(frm.doc.port)
-        $(`#${frm.doc.port}`).addClass("text-success strong")
+        var options = getSerialOptions(frm)
+        qz.serial.openPort(frm.doc.port, options)
+        $(`#${frappe.scrub(frm.doc.port)}`).addClass("text-success strong")
     },
     close_port(frm) {
         qz.serial.closePort(frm.doc.port)
-        $(`#${frm.doc.port}`).removeClass("text-success strong")
+        $(`#${frappe.scrub(frm.doc.port)}`).removeClass("text-success strong")
     },
+
     send_command(frm) {
+        var options = getSerialOptions(frm)
+
+        var serialData = {
+            type: frm.doc.data_type?.toLowerCase(),
+            data: frm.doc.cmd
+        }
+
+        var fromHex = function(m, s1) {
+            return String.fromCharCode(parseInt(s1, 16));
+        };
+
+        //allow some escape characters (newlines, tabs, hex/unicode)
+        serialData.data = serialData.data.replace(/\\n/g, "\n").replace(/\\r/g, "\r").replace(/\\t/g, "\t")
+            .replace(/\\x([0-9A-Za-z]{2})/g, fromHex).replace(/\\u([0-9A-Za-z]{4})/g, fromHex);
+
         qz.serial.sendData(frm.doc.port, '\f')
-        qz.serial.sendData(frm.doc.port, frm.doc.cmd)
+        qz.serial.sendData(frm.doc.port, serialData, options)
+    },
+    clear_screen(frm) {
+        qz.serial.sendData(frm.doc.port, '\f')
+    },
+    reset_serial(frm) {
+        resetSerialOptions(frm)
     }
 });
 
+// for custom triggers on tab switch
+var a = document.getElementById('hardware-testing-serial_tab-tab');
+a.addEventListener('click', e => {
+    $('Button[data-fieldname="send_command"]').addClass("btn-primary")
+    cur_frm.remove_custom_button("Print")
+    cur_frm.trigger("reset_serial")
+});
+
+var b = document.getElementById('hardware-testing-printing_tab-tab');
+b.addEventListener('click', () => {
+    cur_frm.add_custom_button("Print", function() {
+        cur_frm.trigger('print')
+    }).addClass("btn-primary")
+});
 
 var template = `
 <h3>List of Available {{ type }}</h3>
 <ul>
 {% for row in data %}
-<li id={{row}}>{{ row }}</li>
+<li id={{frappe.scrub(row)}}>{{ row }}</li>
 {% endfor %}
 </ul>`
 
@@ -182,7 +219,7 @@ function updateConfig(frm, cfg = null) {
                         rotation: frm.doc.rotation,
                         scaleContent: frm.doc.scale_content,
                         size: pxlSize,
-                        units: frm.doc.units.toLowerCase()
+                        units: frm.doc.units?.toLowerCase()
                     });
 
     return cfg
@@ -258,30 +295,63 @@ function resetPixelOptions(frm) {
     })
 }
 
-function resetSerialOptions() {
-    $("#serialPort").val('');
-    $("#serialBaud").val(9600);
-    $("#serialData").val(8);
-    $("#serialStop").val(1);
-    $("#serialParity").val('NONE');
-    $("#serialFlow").val('NONE');
+function resetSerialOptions(frm) {
+    frm.set_value({
+        "baud_rate": 9600,
+        "data_bits": 8,
+        "stop_bits": 1,
+        "parity": "NONE",
+        "flow_control": "NONE",
+        "cmd": null,
+        "data_type": "Plain",
+        "s_encoding": "UTF-8",
+        "start_bytes": null,
+        "end_bytes": null,
+        "s_width": 0,
+        "include_header": 0,
+        "r_encoding": "UTF-8",
+        "index": 0,
+        "length": 1,
+        "endian": "Big",
+        "enable_length_bytes": 0,
+        "enable_crc_bytes":0,
+        "crc_index": 0,
+        "crc_length": 1
+    })
+}
 
-    $("#serialCmd").val('');
-    $("#serialPlainRadio").prop('checked', true);
-    $("#serialEncoding").val("UTF-8");
+function getSerialOptions(frm) {
+    var options = {
+        baudRate: frm.doc.baud_rate,
+        dataBits: frm.doc.data_bits,
+        stopBits: frm.doc.stop_bits,
+        parity: frm.doc.parity,
+        flowControl: frm.doc.flow_control,
+        encoding: frm.doc.s_encoding || null,
+        rx: {
+            start: frm.doc.start_bytes,
+            end: frm.doc.end_bytes || null,
+            width: frm.doc.s_width || null,
+            untilNewline: frm.doc.wait_for_new_line,
+            lengthBytes: null,
+            crcBytes: null,
+            includeHeader: frm.doc.include_header,
+            encoding: frm.doc.r_encoding
+        }
+    };
+    if (frm.doc.enable_length_bytes) {
+        options.rx.lengthBytes = {
+            index: frm.doc.index,
+            length: frm.doc.length,
+            endian: frm.doc.endian?.toLowerCase()
+        };
+    }
+    if (frm.doc.enable_crc_bytes) {
+        options.rx.crcBytes = {
+            index: frm.doc.crc_index,
+            length: frm.doc.crc_length
+        };
+    }
 
-    $("#serialStart").val('');
-    $("#serialEnd").val('');
-    $("#serialWidth").val('');
-    $("#serialHeader").prop('checked', false);
-    $("#serialRespEncoding").val('UTF-8');
-    $("#serialLenIndex").val('0');
-    $("#serialLenLength").val('1');
-    $("#serialLenEndianBig").prop('checked', true);
-    $("#serialLengthGroup").css('display', 'none');
-    $("#serialCrcIndex").val('0');
-    $("#serialCrcLength").val('1');
-    $("#serialCrcGroup").css('display', 'none');
-
-    // M/T PS60 - 9600, 7, 1, EVEN, NONE
+    return options;
 }
