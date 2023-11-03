@@ -126,33 +126,33 @@ frappe.ui.POSOpening = class extends frappe.ui.POSOpening {
             }
         }
 
-        window.has_printer = profile.has_printer;
+        window.has_printer = profile?.has_printer;
         if(window.has_printer == 1){
             if (profile.printer_name_for_transactions) {
                 window.raw_printer = profile.printer_name_for_transactions
             }
-            else {
-                var d = new frappe.ui.Dialog({
-                    'fields': [
-                        {'fieldname': 'printer', 'fieldtype': 'Select', 'reqd': 1, 'label': "Printer"}
-                    ],
-                    primary_action: function(){
-                        window.raw_printer = d.get_values().printer;
-                        d.hide();
-                    },
-                    secondary_action: function(){
-                        d.hide();
-                    },
-                    secondary_action_label: "Cancel",
-                    'title': 'Select printer for Raw Printing'
-                });
-                await frappe.ui.form.qz_get_printer_list().then((data) => {
-                    d.set_df_property('printer', 'options', data);
-                    d.show();
-                });	
-            }
         }
-        window.is_cash_drawer_attached = profile.is_cash_drawer_attached;
+        if (!window.raw_printer) {
+            var d = new frappe.ui.Dialog({
+                'fields': [
+                    {'fieldname': 'printer', 'fieldtype': 'Select', 'reqd': 1, 'label': "Printer"}
+                ],
+                primary_action: function(){
+                    window.raw_printer = d.get_values().printer;
+                    d.hide();
+                },
+                secondary_action: function(){
+                    d.hide();
+                },
+                secondary_action_label: "Cancel",
+                'title': 'Select printer for Raw Printing'
+            });
+            await frappe.ui.form.qz_get_printer_list().then((data) => {
+                d.set_df_property('printer', 'options', data);
+                d.show();
+            });	
+        }
+        window.is_cash_drawer_attached = profile?.is_cash_drawer_attached;
     }
 }
 
