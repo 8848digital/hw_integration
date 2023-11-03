@@ -1,0 +1,230 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:code",
+ "creation": "2023-10-30 12:02:12.926612",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "code",
+  "column_break_cdij",
+  "description",
+  "printer_section",
+  "has_printer",
+  "printer_name_for_transactions",
+  "printer_name_for_so",
+  "printer_name_for_x_y_tape",
+  "pole_display_section",
+  "port",
+  "baud_rate",
+  "data_bits",
+  "stop_bits",
+  "parity",
+  "flow_control",
+  "encoding",
+  "column_break_dwru",
+  "html_pcnh",
+  "wlc_line_1",
+  "wlc_line_2",
+  "html_wnwk",
+  "txn_end_line_1",
+  "txn_end_line_2",
+  "html_isbt",
+  "txn_line_1",
+  "txn_line_2",
+  "cash_drawer_section",
+  "is_cash_drawer_attached"
+ ],
+ "fields": [
+  {
+   "fieldname": "code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Code",
+   "length": 20,
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_cdij",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description",
+   "length": 50
+  },
+  {
+   "fieldname": "printer_section",
+   "fieldtype": "Section Break",
+   "label": "Printer"
+  },
+  {
+   "default": "0",
+   "fieldname": "has_printer",
+   "fieldtype": "Check",
+   "label": "Has Printer"
+  },
+  {
+   "fieldname": "printer_name_for_transactions",
+   "fieldtype": "Autocomplete",
+   "label": "Printer Name for Transactions"
+  },
+  {
+   "fieldname": "printer_name_for_so",
+   "fieldtype": "Autocomplete",
+   "label": "Printer Name for SO"
+  },
+  {
+   "fieldname": "printer_name_for_x_y_tape",
+   "fieldtype": "Autocomplete",
+   "label": "Printer Name for X-Y Tape"
+  },
+  {
+   "fieldname": "pole_display_section",
+   "fieldtype": "Section Break",
+   "label": "Pole Display"
+  },
+  {
+   "fieldname": "port",
+   "fieldtype": "Autocomplete",
+   "label": "Port"
+  },
+  {
+   "default": "9600",
+   "fieldname": "baud_rate",
+   "fieldtype": "Int",
+   "label": "Baud Rate",
+   "length": 20
+  },
+  {
+   "default": "8",
+   "fieldname": "data_bits",
+   "fieldtype": "Int",
+   "label": "Data Bits",
+   "length": 20
+  },
+  {
+   "default": "1",
+   "fieldname": "stop_bits",
+   "fieldtype": "Int",
+   "label": "Stop Bits",
+   "length": 20
+  },
+  {
+   "fieldname": "parity",
+   "fieldtype": "Data",
+   "label": "Parity",
+   "length": 20,
+   "options": "NONE"
+  },
+  {
+   "default": "NONE",
+   "fieldname": "flow_control",
+   "fieldtype": "Data",
+   "label": "Flow Control",
+   "length": 100
+  },
+  {
+   "default": "UTF-8",
+   "fieldname": "encoding",
+   "fieldtype": "Data",
+   "label": "Encoding",
+   "length": 100
+  },
+  {
+   "fieldname": "column_break_dwru",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "html_pcnh",
+   "fieldtype": "HTML",
+   "options": "<h4>Welcome Message</h4>"
+  },
+  {
+   "default": "Welcome to CitiXsys",
+   "fieldname": "wlc_line_1",
+   "fieldtype": "Data",
+   "label": "Line 1",
+   "length": 20
+  },
+  {
+   "fieldname": "wlc_line_2",
+   "fieldtype": "Data",
+   "label": "Line 2",
+   "length": 20
+  },
+  {
+   "fieldname": "html_wnwk",
+   "fieldtype": "HTML",
+   "options": "<h4>Transaction End Message</h4>"
+  },
+  {
+   "default": "Thanks for Shopping",
+   "fieldname": "txn_end_line_1",
+   "fieldtype": "Data",
+   "label": "Line 1",
+   "length": 20
+  },
+  {
+   "fieldname": "txn_end_line_2",
+   "fieldtype": "Data",
+   "label": "Line 2",
+   "length": 20
+  },
+  {
+   "fieldname": "html_isbt",
+   "fieldtype": "HTML",
+   "options": "<h4>Transaction Message</h4>"
+  },
+  {
+   "fieldname": "txn_line_1",
+   "fieldtype": "Data",
+   "label": "Line 1"
+  },
+  {
+   "fieldname": "txn_line_2",
+   "fieldtype": "Data",
+   "label": "Line 2"
+  },
+  {
+   "fieldname": "cash_drawer_section",
+   "fieldtype": "Section Break",
+   "label": "Cash Drawer"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_cash_drawer_attached",
+   "fieldtype": "Check",
+   "label": "Is Cash Drawer Attached"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-10-30 12:21:48.303127",
+ "modified_by": "Administrator",
+ "module": "HW Integration",
+ "name": "Hardware Profile",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -16,6 +16,7 @@
   "open_cash_drawer",
   "available_printers",
   "raw_printing_section",
+  "language",
   "print_format",
   "raw_commands",
   "pixel_printing_section",
@@ -664,13 +665,19 @@
    "fieldname": "reset_serial",
    "fieldtype": "Button",
    "label": "Reset Options"
+  },
+  {
+   "fieldname": "language",
+   "fieldtype": "Select",
+   "label": "Language",
+   "options": "EPL\nZPL\nESCPOS\nEPCL\nEVOLIS\nSBPL\nPGL"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-10-26 12:00:32.400352",
+ "modified": "2023-10-31 16:41:02.150208",
  "modified_by": "Administrator",
  "module": "HW Integration",
  "name": "Hardware Testing",

@@ -59,6 +59,7 @@ frappe.ui.form.on("Hardware Testing", {
     print(frm) {
         // var config = qz.configs.create(frm.doc.select_printer)
         var config = updateConfig(frm)
+        var opts = getUpdatedOptions(frm,true);
         config.setPrinter(frm.doc.select_printer)
         var printData 
         if (frm.doc.print_type == "Raw Printing") {
@@ -69,7 +70,8 @@ frappe.ui.form.on("Hardware Testing", {
                 type: 'pixel',
                 format: 'html',
                 flavor: 'plain',
-                data: frappe.render_template(frm.doc.html)
+                data: frappe.render_template(frm.doc.html),
+                options: opts
             }]
         }
         console.log(config)
@@ -225,6 +227,27 @@ function updateConfig(frm, cfg = null) {
     return cfg
 }
 
+function getUpdatedOptions(frm,onlyPixel) {
+    if (onlyPixel) {
+        return {
+            pageWidth: frm.doc.render_width,
+            pageHeight: frm.doc.render_height,
+            pageRanges: frm.doc.page_ranges,
+            ignoreTransparency: frm.doc.ignore_transparency
+        };
+    } else {
+        return {
+            language: frm.doc.language,
+            x: frm.doc.x,
+            y: frm.doc.y,
+            dotDensity: frm.doc.dot_density,
+            xmlTag: frm.doc.xml_tag,
+            pageWidth: frm.doc.render_width,
+            pageHeight: frm.doc.render_height
+        };
+    }
+}
+
 function resetRawOptions(frm) {
     //config
     frm.set_value({
@@ -232,7 +255,9 @@ function resetRawOptions(frm) {
         "encoding": null,
         "end_of_doc": null,
         "force_raw": 0,
-        "copies": 1
+        "copies": 1,
+        "orientation": "Portrait",
+
     })
 
     //printer
@@ -255,7 +280,7 @@ function resetPixelOptions(frm) {
         "interpolation": null,
         "job_name": null,
         "legacy_printing": 0,
-        "orientation": null,
+        "orientation": "Portrait",
         "printer_tray": null,
         "rasterize": 0,
         "rotation": 0,
