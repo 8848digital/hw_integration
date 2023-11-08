@@ -1,17 +1,32 @@
 frappe.ui.POSCommandsBuilder = class extends frappe.ui.POSCommandsBuilder{
-    validate_add_pos_item(item_list, redirect_to_profile){
+    async validate_add_pos_item(item_list, redirect_to_profile){
         super.validate_add_pos_item(item_list, redirect_to_profile)
-        var profile = frappe.pos_interface_builder.hw_profile
-        if (window.serial_port) {
-            qz.serial.sendData(window.serial_port, "\ftxn_line_1\ntxn_lin_2")
+        var profile = await frappe.pos_interface_builder.hw_profile
+        console.log(profile)
+        console.log(item_list[item_list.length-1])
+        if (profile.port) {
+            var txn_line1 = await frappe.render_template(profile.txn_line_1, {doc: frappe.pos_interface_builder.doc_obj["POS Invoice"], item: item_list[item_list.length-1]})
+            var txn_line2
+            if (profile.txn_line_2) {
+                console.log(frappe.pos_interface_builder.doc_obj["POS Invoice"])
+                txn_line2 = frappe.render_template(profile.txn_line_2, {"doc": frappe.pos_interface_builder.doc_obj["POS Invoice"], "item": item_list[-1]})
+            }
+            send_comm_data(profile.port, txn_line1, txn_line2)
         }
     }
+    async complete_transaction(profile_id, pos_invoice_name){
+		super.complete_transaction(profile_id, pos_invoice_name)
+        var profile = frappe.pos_interface_builder.hw_profile
+        if (profile.port) {
+            var txn_line1 = profile.txn_end_line_1
+            var txn_line2 = profile.txn_end_line_2
+            send_comm_data(profile.port, txn_line1, txn_line2)
+        }
+	}
     print_receipt(pos_invoice_name, pos_print_format){
 		var me = this;
         if (!pos_invoice_name || !pos_print_format) return
 		if (window.raw_printer){
-            console.log(me.pos_interface.doc_obj["POS Invoice"])
-
 			me.get_raw_commands(pos_invoice_name, pos_print_format,function (out) {
                 frappe.ui.form
                     .qz_connect()
@@ -64,103 +79,36 @@ frappe.ui.POSCommandsBuilder = class extends frappe.ui.POSCommandsBuilder{
 
 }
 
-frappe.ui.POSOpening = class extends frappe.ui.POSOpening {
+frappe.POSInterfaceBuilder = class extends frappe.POSInterfaceBuilder {
     async prepare_app_defaults(data) {
         var me = this
         await super.prepare_app_defaults(data)
-        await frappe.db.get_doc('QZ Settings', undefined).then((qz_doc) => {
-            if(qz_doc.trusted_certificate != null && qz_doc.trusted_certificate != "" && qz_doc.private_certificate != "" && qz_doc.private_certificate != null){
-                frappe.ui.form.qz_init().then(function(){
-                    ///// QZ Certificate ///
-                    qz.security.setCertificatePromise(function(resolve, reject) {
-                        resolve(qz_doc.trusted_certificate);
-                    });
-                    qz.security.setSignaturePromise(function(toSign) {
-                        return function(resolve, reject) {
-                            try {
-                                var pk = KEYUTIL.getKey(qz_doc.private_certificate);
-                                //var sig = new KJUR.crypto.Signature({"alg": "SHA512withRSA"});  // Use "SHA1withRSA" for QZ Tray 2.0 and older
-                                var sig = new KJUR.crypto.Signature({"alg": "SHA1withRSA"});  // Use "SHA1withRSA" for QZ Tray 2.0 and older
-                                sig.init(pk); 
-                                sig.updateString(toSign);
-                                var hex = sig.sign();
-                                resolve(stob64(hextorstr(hex)));
-                            } catch (err) {
-                                console.error(err);
-                                reject(err);
-                            }
-                        };
-                    });
-                    qz_connect()
-                });
-            }
-            else {
-                frappe.ui.form.qz_init().then(()=>{
-                    qz_connect()
-                })
-            }
-        });
-        // await frappe.ui.form.qz_connect()
-        var hw_profile = (await frappe.db.get_value("POS Profile", me.pos_profile, "custom_hardware_profile")).message?.custom_hardware_profile
-        if (hw_profile) {
+        await init_qz()
+        if (!frappe.pos_interface_builder.hw_profile) {
+            let hw_profile = (await frappe.db.get_value("POS Profile", me.pos_profile, "custom_hardware_profile")).message?.custom_hardware_profile
             await frappe.db.get_value("Hardware Profile", hw_profile, "*", (values)=>{
                 frappe.pos_interface_builder.hw_profile = values
             })
-
-            var profile = frappe.pos_interface_builder.hw_profile        
-            if (profile.port && (profile.wlc_line_1 || profile.wlc_line_2)) {
-                await qz.serial.findPorts().then((data)=>{
-                    if (data.includes(profile.port)) {
-                        qz.serial.openPort(profile.port).then(
-                            ()=> {
-                                window.serial_port = profile.port
-                                qz.serial.sendData(profile.port, "\f"+profile.wlc_line_1)
-                                if (profile.wlc_line_2) qz.serial.sendData(profile.port, profile.wlc_line_2)
-                            },
-                            ()=>{
-                                console.log("Hardware not found")
-                            }
-                        )
-                    }
-                })
-            }
         }
-
-        window.has_printer = profile?.has_printer;
-        if(window.has_printer == 1){
-            if (profile.printer_name_for_transactions) {
-                window.raw_printer = profile.printer_name_for_transactions
-            }
-        }
-        if (!window.raw_printer) {
-            var d = new frappe.ui.Dialog({
-                'fields': [
-                    {'fieldname': 'printer', 'fieldtype': 'Select', 'reqd': 1, 'label': "Printer"}
-                ],
-                primary_action: function(){
-                    window.raw_printer = d.get_values().printer;
-                    d.hide();
-                },
-                secondary_action: function(){
-                    d.hide();
-                },
-                secondary_action_label: "Cancel",
-                'title': 'Select printer for Raw Printing'
-            });
-            await frappe.ui.form.qz_get_printer_list().then((data) => {
-                d.set_df_property('printer', 'options', data);
-                d.show();
-            });	
-        }
-        window.is_cash_drawer_attached = profile?.is_cash_drawer_attached;
+        let profile = frappe.pos_interface_builder.hw_profile
+        await set_serial_comm(profile)
+        await set_printer(profile)
     }
+    async load_interface_components(pos_invoice){
+        super.load_interface_components(pos_invoice)
+        if (!pos_invoice) {
+            let profile = frappe.pos_interface_builder.hw_profile
+            await send_comm_data(profile.port, profile.wlc_line_1, profile.wlc_line_2)
+        }
+	}
+
 }
 
 function qz_connect() {
     return new Promise(function (resolve, reject) {
         if (qz.websocket.isActive()) {
             // if already active, resolve immediately
-            // frappe.show_alert({message: __('QZ Tray Connection Active!'), indicator: 'green'});
+            frappe.show_alert({message: __('QZ Tray Connection Active!'), indicator: 'green'});
             resolve();
         } else {
             // try to connect once before firing the mimetype launcher
@@ -223,4 +171,89 @@ function qz_connect() {
             );
         }
     })
+}
+
+async function init_qz() {
+    return frappe.db.get_doc('QZ Settings', undefined).then((qz_doc) => {
+        if(qz_doc.trusted_certificate != null && qz_doc.trusted_certificate != "" && qz_doc.private_certificate != "" && qz_doc.private_certificate != null){
+            frappe.ui.form.qz_init().then(function(){
+                ///// QZ Certificate ///
+                qz.security.setCertificatePromise(function(resolve, reject) {
+                    resolve(qz_doc.trusted_certificate);
+                });
+                qz.security.setSignaturePromise(function(toSign) {
+                    return function(resolve, reject) {
+                        try {
+                            var pk = KEYUTIL.getKey(qz_doc.private_certificate);
+                            //var sig = new KJUR.crypto.Signature({"alg": "SHA512withRSA"});  // Use "SHA1withRSA" for QZ Tray 2.0 and older
+                            var sig = new KJUR.crypto.Signature({"alg": "SHA1withRSA"});  // Use "SHA1withRSA" for QZ Tray 2.0 and older
+                            sig.init(pk); 
+                            sig.updateString(toSign);
+                            var hex = sig.sign();
+                            resolve(stob64(hextorstr(hex)));
+                        } catch (err) {
+                            console.error(err);
+                            reject(err);
+                        }
+                    };
+                });
+                qz_connect()
+            });
+        }
+        else {
+            frappe.ui.form.qz_init().then(()=>{
+                qz_connect()
+            })
+        }
+    });
+}
+
+async function set_printer(profile) {
+    window.has_printer = profile?.has_printer;
+    if(window.has_printer){
+        if (profile.printer_name_for_transactions) {
+            window.raw_printer = profile.printer_name_for_transactions
+        }
+    }
+    if (!window.raw_printer) {
+        var d = new frappe.ui.Dialog({
+            'fields': [
+                {'fieldname': 'printer', 'fieldtype': 'Select', 'reqd': 1, 'label': "Printer"}
+            ],
+            primary_action: function(){
+                window.raw_printer = d.get_values().printer;
+                d.hide();
+            },
+            secondary_action: function(){
+                d.hide();
+            },
+            secondary_action_label: "Cancel",
+            'title': 'Select printer for Raw Printing'
+        });
+        
+    }
+    window.is_cash_drawer_attached = profile?.is_cash_drawer_attached;
+}
+
+async function set_serial_comm(port) {
+    if (window.serial_port) return
+    if (port) {
+        let data = await qz.serial.findPorts()
+        if (data.includes(port)) {
+            await qz.serial.openPort(port).then(
+                ()=> {
+                    window.serial_port = port
+                }).catch(
+                (err)=>{
+                    console.log("Hardware not found: "+err)
+                }
+            )
+        }
+    }
+}
+
+async function send_comm_data(port, line1, line2) {
+    if (!window.serial_port) await set_serial_comm(port)
+    qz.serial.sendData(window.serial_port, "\f"+line1+"\n\r")
+    if (line2) qz.serial.sendData(window.serial_port, line2)
 }
