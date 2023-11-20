@@ -1,0 +1,139 @@
+frappe.ui.POSCommandsBuilder = class extends frappe.ui.POSCommandsBuilder{
+    async insert_pos_invoice_items(item_list, pos_invoice, redirect_to_profile, user_defined_gc_number){
+        var obj =(await super.insert_pos_invoice_items(item_list, pos_invoice, redirect_to_profile, user_defined_gc_number)).message
+        var profile = await hwi.qz.hw_profile
+        if (profile?.port) {
+            var txn_line1 = await frappe.render_template(profile.txn_line_1, {doc: obj, item: item_list[item_list.length-1]})
+            var txn_line2
+            if (profile.txn_line_2) {
+                console.log(frappe.pos_interface_builder.doc_obj["POS Invoice"])
+                txn_line2 = frappe.render_template(profile.txn_line_2, {"doc": obj, "item": item_list[item_list.length-1]})
+            }
+            hwi.qz.send_comm_data(profile.port, txn_line1, txn_line2)
+        }
+    }
+    async complete_transaction(profile_id, pos_invoice_name){
+		super.complete_transaction(profile_id, pos_invoice_name)
+        var profile = hwi.qz.hw_profile
+        if (profile?.port) {
+            var txn_line1 = profile.txn_end_line_1
+            var txn_line2 = profile.txn_end_line_2
+            hwi.qz.send_comm_data(profile.port, txn_line1, txn_line2)
+        }
+	}
+    print_receipt(pos_invoice_name, pos_print_format){
+		var me = this;
+        if (!pos_invoice_name || !pos_print_format) return
+		if (hwi.raw_printer){
+			me.get_raw_commands(pos_invoice_name, pos_print_format,function (out) {
+                hwi.qz
+                    .qz_connect()
+                    .then(function () {
+                        var printData ;
+                        var profile = hwi.qz.hw_profile
+                        // var opts = {
+                        //     language: profile.raw_lang_txn,
+                        //     x: profile.x,
+                        //     y: profile.y,
+                        //     dotDensity: profile.dot_density,
+                        //     xmlTag: profile.xmlTag,
+                        //     pageWidth: profile.render_width,
+                        //     pageHeight: profile.render_height
+                        // };
+                        var opts = {
+                            language: profile.raw_lang_txn,
+                            x: 0,
+                            y: 0,
+                            dotDensity: "double",
+                            xmlTag: "v7:Image",
+                            pageWidth: 480,
+                            pageHeight: 0
+                        };
+                        if (out.raw_printing){
+                            printData = [out.print_data]
+                        }
+                        else {
+                            console.log(opts)
+                            switch(opts.language) {
+                                case 'EPL':
+                                    printData = [
+                                        '\nN\n',
+                                        'q812\n',
+                                        'Q1218,26\n',
+                                        { type: 'raw', format: 'html', flavor: 'plain', data: out.print_data, options: opts },
+                                        '\nP1,1\n'
+                                    ];
+                                    break;
+                                case 'ZPL':
+                                    printData = [
+                                        '^XA\n',
+                                        { type: 'raw', format: 'html', flavor: 'plain', data: out.print_data, options: opts },
+                                        '^XZ\n'
+                                    ];
+                                    break;
+                                case 'ESCPOS':
+                                    printData = [
+                                        { type: 'raw', format: 'html', flavor: 'plain', data: out.print_data, options: opts },
+                                        '\x0A' + '\x0A' + '\x0A', '\x1B' + '\x69'
+                                    ];
+                                    break;
+                                default:
+                                    frappe.throw("Cannot print HTML using this printer language");
+                                    break;
+                                }
+                        }
+                        let config = qz.configs.create(hwi.raw_printer);
+                        return qz.print(config, printData);
+                    })
+                    .then(frappe.ui.form.qz_success)
+                    .catch((err) => {
+                        frappe.ui.form.qz_fail(err);
+                    });
+            })
+		}
+        else {
+            frappe.utils.print(
+				"POS Invoice",
+				pos_invoice_name,
+				pos_print_format,
+				0,
+				frappe.boot.lang
+			);
+        }
+	}
+    get_raw_commands(pos_invoice, pos_print_format,callback) {
+		frappe.call({
+			method: "hw_integration.utils.print.get_print_content",
+			args: {
+				pos_invoice: pos_invoice,
+				print_format: pos_print_format
+			},
+			callback: function (r) {
+				if (!r.exc) {
+					callback(r.message);
+				}
+			},
+		});
+	}
+
+}
+
+frappe.POSInterfaceBuilder = class extends frappe.POSInterfaceBuilder {
+    async prepare_app_defaults(data) {
+        var me = this
+        await super.prepare_app_defaults(data)
+        await hwi.qz.init_qz().catch((err)=>{
+            console.log("Couldn't connect due to "+err)
+        })
+        let profile = await hwi.qz.get_pos_hw_profile(me.pos_profile)
+        await hwi.qz.set_serial_comm(profile)
+        await hwi.qz.set_printer(profile)
+    }
+    async load_interface_components(pos_invoice){
+        super.load_interface_components(pos_invoice)
+        if (!pos_invoice) {
+            let profile = hwi.qz.hw_profile
+            hwi.qz.send_comm_data(profile.port, profile.wlc_line_1, profile.wlc_line_2)
+        }
+	}
+}

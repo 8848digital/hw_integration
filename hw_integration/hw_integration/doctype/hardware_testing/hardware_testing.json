@@ -18,6 +18,7 @@
   "raw_printing_section",
   "language",
   "print_format",
+  "is_raw_printing",
   "raw_commands",
   "pixel_printing_section",
   "html_print_format",
@@ -671,13 +672,20 @@
    "fieldtype": "Select",
    "label": "Language",
    "options": "EPL\nZPL\nESCPOS\nEPCL\nEVOLIS\nSBPL\nPGL"
+  },
+  {
+   "default": "0",
+   "fetch_from": "print_format.raw_printing",
+   "fieldname": "is_raw_printing",
+   "fieldtype": "Check",
+   "label": "Is Raw Printing"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-10-31 16:41:02.150208",
+ "modified": "2023-11-09 11:02:10.260053",
  "modified_by": "Administrator",
  "module": "HW Integration",
  "name": "Hardware Testing",

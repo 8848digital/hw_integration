@@ -16,6 +16,34 @@
   "printer_name_for_transactions",
   "printer_name_for_so",
   "printer_name_for_x_y_tape",
+  "column_break_xmzm",
+  "raw_lang_txn",
+  "raw_lang_so",
+  "raw_lang_so_x_y_tape",
+  "section_break_rxql",
+  "html_lfxz",
+  "txn_x",
+  "txn_y",
+  "txn_dot_density",
+  "txn_xml_tag",
+  "txn_render_width",
+  "txn_render_y",
+  "column_break_jgel",
+  "html_rnxv",
+  "so_x",
+  "so_y",
+  "so_dot_density",
+  "so_xml_tag",
+  "so_render_width",
+  "so_render_height",
+  "column_break_maef",
+  "html_epjl",
+  "xy_x",
+  "xy_y",
+  "xy_dot_density",
+  "xy_xml_tag",
+  "xy_render_width",
+  "xy_render_height",
   "pole_display_section",
   "port",
   "baud_rate",
@@ -118,8 +146,7 @@
    "fieldname": "parity",
    "fieldtype": "Data",
    "label": "Parity",
-   "length": 20,
-   "options": "NONE"
+   "length": 20
   },
   {
    "default": "NONE",
@@ -200,11 +227,157 @@
    "fieldname": "is_cash_drawer_attached",
    "fieldtype": "Check",
    "label": "Is Cash Drawer Attached"
+  },
+  {
+   "fieldname": "column_break_xmzm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "raw_lang_txn",
+   "fieldtype": "Select",
+   "label": "Raw Language Transactions",
+   "options": "ESCPOS\nEPL\nZPL\nEPCL\nEVOLIS\nSBPL\nPGL"
+  },
+  {
+   "fieldname": "raw_lang_so",
+   "fieldtype": "Select",
+   "label": "Raw Language for SO",
+   "options": "ESCPOS\nEPL\nZPL\nEPCL\nEVOLIS\nSBPL\nPGL"
+  },
+  {
+   "fieldname": "raw_lang_so_x_y_tape",
+   "fieldtype": "Select",
+   "label": "Raw Language for X-Y Tape",
+   "options": "ESCPOS\nEPL\nZPL\nEPCL\nEVOLIS\nSBPL\nPGL"
+  },
+  {
+   "fieldname": "section_break_rxql",
+   "fieldtype": "Section Break",
+   "label": "Raw Command Options"
+  },
+  {
+   "fieldname": "txn_x",
+   "fieldtype": "Float",
+   "label": "X"
+  },
+  {
+   "fieldname": "txn_y",
+   "fieldtype": "Float",
+   "label": "Y"
+  },
+  {
+   "default": "double",
+   "fieldname": "txn_dot_density",
+   "fieldtype": "Data",
+   "label": "Dot Density"
+  },
+  {
+   "default": "v7:Image",
+   "fieldname": "txn_xml_tag",
+   "fieldtype": "Data",
+   "label": "XML Tag"
+  },
+  {
+   "fieldname": "txn_render_width",
+   "fieldtype": "Float",
+   "label": "Render Width"
+  },
+  {
+   "fieldname": "txn_render_y",
+   "fieldtype": "Float",
+   "label": "Render Height"
+  },
+  {
+   "fieldname": "column_break_jgel",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "html_lfxz",
+   "fieldtype": "HTML",
+   "options": "<h4>Options for Transaction</h4>"
+  },
+  {
+   "fieldname": "html_rnxv",
+   "fieldtype": "HTML",
+   "options": "<h4>Options for SO</h4>"
+  },
+  {
+   "fieldname": "so_x",
+   "fieldtype": "Float",
+   "label": "X"
+  },
+  {
+   "fieldname": "so_y",
+   "fieldtype": "Float",
+   "label": "Y"
+  },
+  {
+   "default": "double",
+   "fieldname": "so_dot_density",
+   "fieldtype": "Data",
+   "label": "Dot Density"
+  },
+  {
+   "default": "v7:Image",
+   "fieldname": "so_xml_tag",
+   "fieldtype": "Data",
+   "label": "XML Tag"
+  },
+  {
+   "fieldname": "so_render_width",
+   "fieldtype": "Float",
+   "label": "Render Width"
+  },
+  {
+   "fieldname": "so_render_height",
+   "fieldtype": "Float",
+   "label": "Render Height"
+  },
+  {
+   "fieldname": "column_break_maef",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "html_epjl",
+   "fieldtype": "HTML",
+   "options": "<h4>Options for X-Y Tape</h4>"
+  },
+  {
+   "fieldname": "xy_x",
+   "fieldtype": "Float",
+   "label": "X"
+  },
+  {
+   "fieldname": "xy_y",
+   "fieldtype": "Float",
+   "label": "Y"
+  },
+  {
+   "default": "double",
+   "fieldname": "xy_dot_density",
+   "fieldtype": "Data",
+   "label": "Dot Density"
+  },
+  {
+   "default": "v7:Image",
+   "fieldname": "xy_xml_tag",
+   "fieldtype": "Data",
+   "label": "XML Tag"
+  },
+  {
+   "fieldname": "xy_render_width",
+   "fieldtype": "Float",
+   "label": "Render Width"
+  },
+  {
+   "fieldname": "xy_render_height",
+   "fieldtype": "Float",
+   "label": "Render Height"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-30 12:21:48.303127",
+ "modified": "2023-11-20 11:09:31.702701",
  "modified_by": "Administrator",
  "module": "HW Integration",
  "name": "Hardware Profile",

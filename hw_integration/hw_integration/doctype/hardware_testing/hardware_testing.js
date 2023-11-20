@@ -3,13 +3,6 @@
 
 frappe.ui.form.on("Hardware Testing", {
     setup(frm) {
-        frm.set_query("print_format", function() {
-            return {
-                filters: {
-                    raw_printing: 1
-                }
-            }
-        })
         frm.set_query("html_print_format", function() {
             return {
                 filters: {
@@ -57,15 +50,46 @@ frappe.ui.form.on("Hardware Testing", {
         qz.print(config, data);
     },
     print(frm) {
-        // var config = qz.configs.create(frm.doc.select_printer)
         var config = updateConfig(frm)
-        var opts = getUpdatedOptions(frm,true);
         config.setPrinter(frm.doc.select_printer)
         var printData 
         if (frm.doc.print_type == "Raw Printing") {
-            printData = eval(frm.doc.raw_commands)
+            var opts = getUpdatedOptions(frm);
+            if (frm.doc.is_raw_printing) {
+                printData = eval(frm.doc.raw_commands)
+            }
+            else {
+                switch(opts.language) {
+                    case 'EPL':
+                        printData = [
+                            '\nN\n',
+                            'q812\n',
+                            'Q1218,26\n',
+                            { type: 'raw', format: 'html', flavor: 'plain', data: frm.doc.raw_commands, options: opts },
+                            '\nP1,1\n'
+                        ];
+                        break;
+                    case 'ZPL':
+                        printData = [
+                            '^XA\n',
+                            { type: 'raw', format: 'html', flavor: 'plain', data: frm.doc.raw_commands, options: opts },
+                            '^XZ\n'
+                        ];
+                        break;
+                    case 'ESCPOS':
+                        printData = [
+                            { type: 'raw', format: 'html', flavor: 'plain', data: frm.doc.raw_commands, options: opts },
+                            '\x0A' + '\x0A' + '\x0A', '\x1B' + '\x69'
+                        ];
+                        break;
+                    default:
+                        frappe.throw("Cannot print HTML using this printer language");
+                        break;
+                    }
+            }
         }
         else {
+            var opts = getUpdatedOptions(frm,true);
             printData = [{
                 type: 'pixel',
                 format: 'html',
@@ -74,7 +98,6 @@ frappe.ui.form.on("Hardware Testing", {
                 options: opts
             }]
         }
-        console.log(config)
         qz.print(config, printData)
     },
     print_format(frm) {
@@ -257,7 +280,8 @@ function resetRawOptions(frm) {
         "force_raw": 0,
         "copies": 1,
         "orientation": "Portrait",
-
+        "scale_content": 1,
+        "units": "in",
     })
 
     //printer
