@@ -117,16 +117,19 @@ class HWIntegration {
     async set_printer() {
         var me = this
         var profile = me.hw_profile
+        var printers = await qz.printers.find()
         hwi.has_printer = profile?.has_printer;
         if(hwi.has_printer){
             if (profile.printer_name_for_transactions) {
-                hwi.raw_printer = profile.printer_name_for_transactions
+                if (printers.includes(profile.printer_name_for_transactions)) {
+                    hwi.raw_printer = profile.printer_name_for_transactions
+                }
             }
         }
         if (!hwi.raw_printer) {
             var d = new frappe.ui.Dialog({
                 'fields': [
-                    {'fieldname': 'printer', 'fieldtype': 'Select', 'reqd': 1, 'label': "Printer"}
+                    {'fieldname': 'printer', 'fieldtype': 'Select', 'reqd': 1, 'label': "Printer", "options": printers}
                 ],
                 primary_action: function(){
                     hwi.raw_printer = d.get_values().printer;
@@ -138,7 +141,7 @@ class HWIntegration {
                 secondary_action_label: "Cancel",
                 'title': 'Select printer for Raw Printing'
             });
-            
+            d.show();
         }
         hwi.is_cash_drawer_attached = profile?.is_cash_drawer_attached;
     }
