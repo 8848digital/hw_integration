@@ -126,13 +126,14 @@ frappe.POSInterfaceBuilder = class extends frappe.POSInterfaceBuilder {
             console.log("Couldn't connect due to "+err)
         })
         let profile = await hwi.qz.get_pos_hw_profile(me.pos_profile)
-        await hwi.qz.set_serial_comm(profile)
-        await hwi.qz.set_printer(profile)
+        await hwi.qz.set_serial_comm(profile?.port)
+        await hwi.qz.set_printer()
     }
     async load_interface_components(pos_invoice){
         super.load_interface_components(pos_invoice)
         if (!pos_invoice) {
             let profile = hwi.qz.hw_profile
+            if (!profile) return
             hwi.qz.send_comm_data(profile.port, profile.wlc_line_1, profile.wlc_line_2)
         }
 	}
