@@ -27,7 +27,7 @@
   "txn_dot_density",
   "txn_xml_tag",
   "txn_render_width",
-  "txn_render_y",
+  "txn_render_height",
   "column_break_jgel",
   "html_rnxv",
   "so_x",
@@ -283,11 +283,6 @@
    "label": "Render Width"
   },
   {
-   "fieldname": "txn_render_y",
-   "fieldtype": "Float",
-   "label": "Render Height"
-  },
-  {
    "fieldname": "column_break_jgel",
    "fieldtype": "Column Break"
   },
@@ -373,11 +368,16 @@
    "fieldname": "xy_render_height",
    "fieldtype": "Float",
    "label": "Render Height"
+  },
+  {
+   "fieldname": "txn_render_height",
+   "fieldtype": "Float",
+   "label": "Render Height"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-20 11:09:31.702701",
+ "modified": "2023-11-23 11:27:40.481558",
  "modified_by": "Administrator",
  "module": "HW Integration",
  "name": "Hardware Profile",

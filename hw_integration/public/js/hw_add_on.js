@@ -166,7 +166,12 @@ class HWIntegration {
         if (!hwi.serial_port) return
         qz.serial.sendData(hwi.serial_port, "\f"+line1+"\n\r")
         if (line2) qz.serial.sendData(hwi.serial_port, line2)
-    }    
+    }
+    async send_comm_data_for_line_2(port, data) {
+        if (!hwi.serial_port) await this.set_serial_comm(port)
+        if (!hwi.serial_port) return
+        qz.serial.sendData(hwi.serial_port, "\n\r\x18"+data)
+    }
 }
 
 hwi.qz = new HWIntegration()
