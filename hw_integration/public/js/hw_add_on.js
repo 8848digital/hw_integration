@@ -162,6 +162,7 @@ class HWIntegration {
         }
     }
     async send_comm_data(port, line1, line2) {
+        console.log([line1, line2])
         if (!hwi.serial_port) await this.set_serial_comm(port)
         if (!hwi.serial_port) return
         qz.serial.sendData(hwi.serial_port, "\f"+line1+"\n\r")
@@ -172,6 +173,71 @@ class HWIntegration {
         if (!hwi.serial_port) return
         qz.serial.sendData(hwi.serial_port, "\n\r\x18"+data)
     }
+    async set_weighscale_port(port) {
+        var me = this
+        if (me.weighscale_port) {
+            return
+        }
+        let opts = {
+            "baudRate": "9600",
+            "dataBits": "7",
+            "stopBits": "1",
+            "parity": "even",
+            "flowControl": "NONE",
+            "encoding": "UTF-8",
+            "start": '\x02',
+            "end": '\x0D',
+            // "start": "",
+            // "end": null,
+            "width": null,
+            "rx": {
+                "lengthBytes": null,
+                "crcBytes": null,
+                "includeHeader": false,
+                "untilNewline": true,
+                "encoding": "UTF-8"
+            }
+        };
+        me.isListening = false
+        
+        function handleSerialData(args) {
+            if (me.isListening && args?.type == "RECEIVE") {
+                // console.log("weight:", args);
+                if (args.output && args.output != me.weight) {
+                    console.log(args)
+                    me.weight = args.output
+                }
+            }
+        }
+
+        qz.serial.setSerialCallbacks(handleSerialData);
+        qz.serial.openPort(port, opts).then((res)=>{
+            console.log(res)
+            me.weighscale_port = port
+        }).catch((err)=> {
+            console.log("Error: "+err)
+        })
+    }
+    startListing(port){
+        var me = this
+        if (!me.weighscale_port || me.weighscale_port != port) {
+            me.set_weighscale_port(port)
+        }
+        me.isListening = true
+    }
+    async get_weighscale_data() {
+        let headers = new Headers();
+        var weight = await (fetch('http://localhost:9000/api/readweight', {
+            mode: 'cors',
+            headers: headers,
+        }).then((response) => {
+                return response.json();
+            }))
+            
+        // console.log(weight)
+        return flt(weight)
+    }
 }
 
 hwi.qz = new HWIntegration()
+hwi.qz.init_qz()

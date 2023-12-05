@@ -102,8 +102,8 @@ frappe.ui.form.on("Hardware Testing", {
     },
     print_format(frm) {
         if (frm.doc.print_format) {
-            frappe.db.get_value("Print Format", frm.doc.print_format, "raw_commands", (r)=> {
-                frm.set_value("raw_commands", r.raw_commands)
+            frappe.db.get_value("Print Format", frm.doc.print_format, ["raw_commands", "html"], (r)=> {
+                frm.set_value("raw_commands", (r.raw_commands || r.html))
             })
         }
     },

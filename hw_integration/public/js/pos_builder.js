@@ -12,8 +12,8 @@ frappe.ui.POSCommandsBuilder = class extends frappe.ui.POSCommandsBuilder{
             hwi.qz.send_comm_data(profile.port, txn_line1, txn_line2)
         }
     }
-    async complete_transaction(profile_id, pos_invoice_name){
-		super.complete_transaction(profile_id, pos_invoice_name)
+    async _complete_transaction(profile_id, pos_invoice_name){
+		super._complete_transaction(profile_id, pos_invoice_name)
         var profile = hwi.qz.hw_profile
         if (profile?.port) {
             var txn_line1 = profile.txn_end_line_1
@@ -173,15 +173,12 @@ frappe.POSInterfaceBuilder = class extends frappe.POSInterfaceBuilder {
     //         hwi.qz.send_comm_data(profile.port, profile.wlc_line_1, profile.wlc_line_2)
     //     }
 	// }
-    // async get_interface_profile(interface_profile, pos_invoice, negative_stock_item_data=null, alternate_product=null, batchwise_item=null, serial_item=null, variant_template=null){
-    //     await super.get_interface_profile(interface_profile, pos_invoice, negative_stock_item_data, alternate_product, batchwise_item, serial_item, variant_template)
-    //     var me = this
-    //     console.log([me.interface_profile_doc.name, frappe.get_route()[1]])
-    //     if (!pos_invoice && me.interface_profile_doc.name == frappe.get_route()[1]) {
-    //         let profile = hwi.qz.hw_profile
-    //         if (!profile) return
-    //         console.log('print')
-    //         hwi.qz.send_comm_data(profile.port, profile.wlc_line_1, profile.wlc_line_2)
-    //     }
-	// }
+    async get_interface_profile(interface_profile, pos_invoice, negative_stock_item_data=null, alternate_product=null, batchwise_item=null, serial_item=null, variant_template=null){
+        await super.get_interface_profile(interface_profile, pos_invoice, negative_stock_item_data, alternate_product, batchwise_item, serial_item, variant_template)
+        if (!pos_invoice) {
+            let profile = hwi.qz.hw_profile
+            if (!profile) return
+            hwi.qz.send_comm_data(profile.port, profile.wlc_line_1, profile.wlc_line_2)
+        }
+	}
 }
