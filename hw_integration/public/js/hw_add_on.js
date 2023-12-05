@@ -162,7 +162,6 @@ class HWIntegration {
         }
     }
     async send_comm_data(port, line1, line2) {
-        console.log([line1, line2])
         if (!hwi.serial_port) await this.set_serial_comm(port)
         if (!hwi.serial_port) return
         qz.serial.sendData(hwi.serial_port, "\f"+line1+"\n\r")

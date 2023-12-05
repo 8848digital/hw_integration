@@ -173,12 +173,12 @@ frappe.POSInterfaceBuilder = class extends frappe.POSInterfaceBuilder {
     //         hwi.qz.send_comm_data(profile.port, profile.wlc_line_1, profile.wlc_line_2)
     //     }
 	// }
-    async get_interface_profile(interface_profile, pos_invoice, negative_stock_item_data=null, alternate_product=null, batchwise_item=null, serial_item=null, variant_template=null){
-        await super.get_interface_profile(interface_profile, pos_invoice, negative_stock_item_data, alternate_product, batchwise_item, serial_item, variant_template)
-        if (!pos_invoice) {
-            let profile = hwi.qz.hw_profile
-            if (!profile) return
-            hwi.qz.send_comm_data(profile.port, profile.wlc_line_1, profile.wlc_line_2)
-        }
-	}
+    // async get_interface_profile(interface_profile, pos_invoice, negative_stock_item_data=null, alternate_product=null, batchwise_item=null, serial_item=null, variant_template=null){
+    //     await super.get_interface_profile(interface_profile, pos_invoice, negative_stock_item_data, alternate_product, batchwise_item, serial_item, variant_template)
+    //     if (!pos_invoice) {
+    //         let profile = hwi.qz.hw_profile
+    //         if (!profile) return
+    //         hwi.qz.send_comm_data(profile.port, profile.wlc_line_1, profile.wlc_line_2)
+    //     }
+	// }
 }
