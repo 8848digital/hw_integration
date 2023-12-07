@@ -147,6 +147,9 @@ frappe.ui.POSCommandsBuilder = class extends frappe.ui.POSCommandsBuilder{
             }
         })
     }
+    get_weight_from_machine(){
+        return hwi.get_weight()
+    }
 }
 
 frappe.POSInterfaceBuilder = class extends frappe.POSInterfaceBuilder {

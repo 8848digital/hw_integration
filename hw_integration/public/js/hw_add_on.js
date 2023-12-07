@@ -224,19 +224,17 @@ class HWIntegration {
         }
         me.isListening = true
     }
-    async get_weighscale_data() {
-        let headers = new Headers();
-        var weight = await (fetch('http://localhost:9000/api/readweight', {
-            mode: 'cors',
-            headers: headers,
-        }).then((response) => {
-                return response.json();
-            }))
-            
-        // console.log(weight)
-        return flt(weight)
+    get_weighscale_data() {
+        return flt(this.weight)
     }
 }
 
 hwi.qz = new HWIntegration()
-hwi.qz.init_qz()
+// hwi.qz.init_qz()
+hwi.get_weight = function() {
+    let request = new XMLHttpRequest()
+    request.open("GET","http://localhost:9000/api/readweight", false)    
+    request.send()
+    console.log(request.responseText)
+    return flt(request.responseText.replaceAll('"',''))
+}
