@@ -7,10 +7,28 @@ repos:
         exclude: ".*json$|.*txt$|.*csv|.*md"
       - id: check-yaml
       - id: no-commit-to-branch
-        args: ['--branch', 'develop']
+        args: ['--branch', 'master']
       - id: check-merge-conflict
       - id: check-ast
       - id: check-json
       - id: check-toml
       - id: check-yaml
       - id: debug-statements
+
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.44.0
+    hooks:
+      - id: eslint
+        types_or: [javascript]
+        args: ['--quiet']
+        # Ignore any files that might contain jinja / bundles
+        exclude: |
+            (?x)^(
+                hw_integration/public/dist/.*|
+                cypress/.*|
+                .*node_modules.*|
+                .*boilerplate.*|
+                hw_integration/public/js/controllers/.*|
+                hw_integration/templates/pages/order.js|
+                hw_integration/templates/includes/.*
+            )$
