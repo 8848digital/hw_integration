@@ -8,7 +8,7 @@ class HWIntegration {
                 frappe.show_alert({message: __('QZ Tray Connection Active!'), indicator: 'green'});
                 resolve();
             } else {
-                // try to connect once before firing the mimetype launcher
+                // try to connect once before firing the mimetype launcher .
                 frappe.show_alert({
                     message: __("Attempting Connection to QZ Tray..."),
                     indicator: "blue",
