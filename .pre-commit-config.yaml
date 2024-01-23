@@ -28,7 +28,5 @@ repos:
                 cypress/.*|
                 .*node_modules.*|
                 .*boilerplate.*|
-                hw_integration/public/js/controllers/.*|
-                hw_integration/templates/pages/order.js|
                 hw_integration/templates/includes/.*
             )$
