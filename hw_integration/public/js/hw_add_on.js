@@ -8,7 +8,7 @@ class HWIntegration {
                 frappe.show_alert({message: __('QZ Tray Connection Active!'), indicator: 'green'});
                 resolve();
             } else {
-                // try to connect once before firing the mimetype launcher
+                // try to connect once before firing the mimetype launcher .
                 frappe.show_alert({
                     message: __("Attempting Connection to QZ Tray..."),
                     indicator: "blue",
@@ -82,9 +82,8 @@ class HWIntegration {
                         return function(resolve, reject) {
                             try {
                                 var pk = KEYUTIL.getKey(qz_doc.private_certificate);
-                                //var sig = new KJUR.crypto.Signature({"alg": "SHA512withRSA"});  // Use "SHA1withRSA" for QZ Tray 2.0 and older
                                 var sig = new KJUR.crypto.Signature({"alg": "SHA1withRSA"});  // Use "SHA1withRSA" for QZ Tray 2.0 and older
-                                sig.init(pk); 
+                                sig.init(pk);
                                 sig.updateString(toSign);
                                 var hex = sig.sign();
                                 resolve(stob64(hextorstr(hex)));
@@ -198,7 +197,7 @@ class HWIntegration {
             }
         };
         me.isListening = false
-        
+
         function handleSerialData(args) {
             if (me.isListening && args?.type == "RECEIVE") {
                 // console.log("weight:", args);
@@ -233,7 +232,7 @@ hwi.qz = new HWIntegration()
 // hwi.qz.init_qz()
 hwi.get_weight = function() {
     let request = new XMLHttpRequest()
-    request.open("GET","http://localhost:9000/api/readweight", false)    
+    request.open("GET","http://localhost:9000/api/readweight", false)
     request.send()
     console.log(request.responseText)
     return flt(request.responseText.replaceAll('"',''))
