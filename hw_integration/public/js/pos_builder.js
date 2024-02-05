@@ -1,6 +1,7 @@
 frappe.ui.POSCommandsBuilder = class extends frappe.ui.POSCommandsBuilder{
     async insert_pos_invoice_items(item_list, pos_invoice, redirect_to_profile, user_defined_gc_number){
-        var obj =(await super.insert_pos_invoice_items(item_list, pos_invoice, redirect_to_profile, user_defined_gc_number)).message
+        await super.insert_pos_invoice_items(item_list, pos_invoice, redirect_to_profile, user_defined_gc_number)
+		const obj = cur_frm.doc
         var profile = await hwi.qz.hw_profile
         if (profile?.port) {
             var txn_line1 = await frappe.render_template(profile.txn_line_1, {doc: obj, item: item_list[item_list.length-1]})
@@ -156,14 +157,19 @@ frappe.POSInterfaceBuilder = class extends frappe.POSInterfaceBuilder {
     async prepare_app_defaults(data) {
         var me = this
         await super.prepare_app_defaults(data)
-        let profile = await hwi.qz.get_pos_hw_profile(me.pos_profile)
+        const profile = await hwi.qz.get_pos_hw_profile(me.terminal)
         if (!Object.keys(profile).length) return
-        await hwi.qz.init_qz().catch((err)=>{
+		console.log(profile)
+		// debugger
+        hwi.qz.init_qz().then(()=> {
+			console.log(qz)
+			hwi.qz.set_printer()
+			hwi.qz.set_serial_comm(profile?.port).then(()=>{
+				hwi.qz.send_comm_data(profile.port, profile.wlc_line_1, profile.wlc_line_2)
+			})
+		}).catch((err)=>{
             console.log("Couldn't connect due to "+err)
         })
-        await hwi.qz.set_serial_comm(profile?.port)
-        await hwi.qz.set_printer()
-        hwi.qz.send_comm_data(profile.port, profile.wlc_line_1, profile.wlc_line_2)
     }
     // async load_interface_components(pos_invoice){
     //     var me = this

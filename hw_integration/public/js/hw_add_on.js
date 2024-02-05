@@ -48,7 +48,11 @@ class HWIntegration {
                                     () => {
                                         frappe.throw(
                                             __(
-                                                'Error connecting to QZ Tray Application...<br><br> You need to have QZ Tray application installed and running, to use the Raw Print feature.<br><br><a target="_blank" href="https://qz.io/download/">Click here to Download and install QZ Tray</a>.<br> <a target="_blank" href="https://erpnext.com/docs/user/manual/en/setting-up/print/raw-printing">Click here to learn more about Raw Printing</a>.'
+                                                `Error connecting to QZ Tray Application...<br><br>
+												You need to have QZ Tray application installed and running,
+												to use the Raw Print feature.<br><br><a target="_blank" href="https://qz.io/download/">
+												Click here to Download and install QZ Tray</a>.<br> <a target="_blank"
+												href="https://erpnext.com/docs/user/manual/en/setting-up/print/raw-printing">Click here to learn more about Raw Printing</a>.`
                                             )
                                         );
                                         reject();
@@ -71,7 +75,8 @@ class HWIntegration {
     }
     async init_qz() {
         var me = this
-        return frappe.db.get_doc('QZ Settings', undefined).then((qz_doc) => {
+        return new Promise(function (resolve, reject) {
+		frappe.db.get_doc('QZ Settings', undefined).then((qz_doc) => {
             if(qz_doc.trusted_certificate != null && qz_doc.trusted_certificate != "" && qz_doc.private_certificate != "" && qz_doc.private_certificate != null){
                 frappe.ui.form.qz_init().then(function(){
                     ///// QZ Certificate ///
@@ -84,7 +89,7 @@ class HWIntegration {
                                 var pk = KEYUTIL.getKey(qz_doc.private_certificate);
                                 //var sig = new KJUR.crypto.Signature({"alg": "SHA512withRSA"});  // Use "SHA1withRSA" for QZ Tray 2.0 and older
                                 var sig = new KJUR.crypto.Signature({"alg": "SHA1withRSA"});  // Use "SHA1withRSA" for QZ Tray 2.0 and older
-                                sig.init(pk); 
+                                sig.init(pk);
                                 sig.updateString(toSign);
                                 var hex = sig.sign();
                                 resolve(stob64(hextorstr(hex)));
@@ -94,20 +99,27 @@ class HWIntegration {
                             }
                         };
                     });
-                    me.qz_connect()
+                    me.qz_connect().then(()=> {
+						resolve()
+					})
                 });
             }
             else {
                 frappe.ui.form.qz_init().then(()=>{
-                    me.qz_connect()
+                    me.qz_connect().then(()=>{
+						resolve()
+					})
                 })
             }
-        });
+        }).catch((err)=> {
+			reject(err)
+		});
+	})
     }
-    async get_pos_hw_profile(pos_profile) {
+    async get_pos_hw_profile(pos_terminal) {
         var me = this
         if (!me.hw_profile) {
-            let profile_name = (await frappe.db.get_value("POS Profile", pos_profile, "custom_hardware_profile")).message?.custom_hardware_profile
+            let profile_name = (await frappe.db.get_value("POS Terminal", pos_terminal, "hardware_profile")).message?.hardware_profile
             return (await frappe.db.get_value("Hardware Profile", profile_name, "*", (values)=>{
                 me.hw_profile = values
             })).message
@@ -198,7 +210,7 @@ class HWIntegration {
             }
         };
         me.isListening = false
-        
+
         function handleSerialData(args) {
             if (me.isListening && args?.type == "RECEIVE") {
                 // console.log("weight:", args);
@@ -233,7 +245,7 @@ hwi.qz = new HWIntegration()
 // hwi.qz.init_qz()
 hwi.get_weight = function() {
     let request = new XMLHttpRequest()
-    request.open("GET","http://localhost:9000/api/readweight", false)    
+    request.open("GET","http://localhost:9000/api/readweight", false)
     request.send()
     console.log(request.responseText)
     return flt(request.responseText.replaceAll('"',''))
