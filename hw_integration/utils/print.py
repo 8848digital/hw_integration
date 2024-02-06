@@ -5,10 +5,10 @@ from frappe.utils.safe_exec import get_safe_globals
 from frappe.utils.user import get_user_fullname
 
 @frappe.whitelist()
-def get_print_content(pos_invoice, print_format):
-    doc = frappe.get_doc("POS Invoice", pos_invoice)
+def get_print_content(reference_doctype, reference_docname, print_format):
+    doc = frappe.get_doc(reference_doctype, reference_docname)
     pf_doc = frappe.get_doc("Print Format", print_format)
-    data_to_render = get_print_format("POS Invoice", pf_doc)
+    data_to_render = get_print_format(reference_doctype, pf_doc)
     context = get_context(doc)
     template = frappe.render_template(data_to_render, context)
     return {"print_data": template, "raw_printing": pf_doc.raw_printing}

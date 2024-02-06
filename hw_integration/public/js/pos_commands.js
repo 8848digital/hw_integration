@@ -8,11 +8,11 @@ frappe.ui.POSCommandsBuilder = class extends frappe.ui.POSCommandsBuilder{
             hwi.qz.send_comm_data(profile.port, txn_line1, txn_line2)
         }
 	}
-    print_receipt(pos_invoice_name, pos_print_format){
+    print_receipt(reference_doctype, reference_docname, pos_print_format){
 		var me = this;
-        if (!pos_invoice_name || !pos_print_format) return
+        if (!reference_docname || !pos_print_format) return
 		if (hwi.raw_printer){
-			me.get_raw_commands(pos_invoice_name, pos_print_format,function (out) {
+			me.get_raw_commands(reference_doctype, reference_docname, pos_print_format,function (out) {
                 hwi.qz
                     .qz_connect()
                     .then(function () {
@@ -71,19 +71,20 @@ frappe.ui.POSCommandsBuilder = class extends frappe.ui.POSCommandsBuilder{
 		}
         else {
             frappe.utils.print(
-				"POS Invoice",
-				pos_invoice_name,
+				reference_doctype,
+				reference_docname,
 				pos_print_format,
 				0,
 				frappe.boot.lang
 			);
         }
 	}
-    get_raw_commands(pos_invoice, pos_print_format,callback) {
+    get_raw_commands(reference_doctype, reference_docname, pos_print_format,callback) {
 		frappe.call({
 			method: "hw_integration.utils.print.get_print_content",
 			args: {
-				pos_invoice: pos_invoice,
+				reference_doctype: reference_doctype,
+				reference_docname: reference_docname,
 				print_format: pos_print_format
 			},
 			callback: function (r) {
